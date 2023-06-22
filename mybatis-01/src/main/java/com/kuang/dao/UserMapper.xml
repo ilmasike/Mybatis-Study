@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace命名空间：绑定一个对应的mapper接口-->
+<mapper namespace="com.kuang.dao.UserMapper">
+
+    <!--    1.查询语句：用select标签。  这标签其实对应原来DaoImpl类中的方法重写功能，其中id对应重写方法的名。 -->
+    <!--parameterType传入SQL语句的参数类型 。-->
+    <select id="getUserList" resultType="com.kuang.pojo.User">    /*resultType、resultMap  对应DaoImpl类中的结果集.*/
+        select  * from mybatis.user;
+    </select>
+
+
+    <select id="getUserById" resultType="com.kuang.pojo.User" parameterType="int">
+          select  * from mybatis.user where id=#{id};
+    </select>
+
+    <select id="getUserById2" resultType="com.kuang.pojo.User" parameterType="map">
+        select  * from mybatis.user where id=#{id} and name=#{name};
+    </select>
+
+    <!--User:对象中的属性，是可以直接去取出来的。比如#{id},就取到了我们传参进去的user的一个属性-->
+    <insert id="addUser" parameterType="com.kuang.pojo.User">
+          insert into mybatis.user (id,name ,pwd) values (#{id},#{name},#{pwd})
+    </insert>
+
+    <insert id="addUser2" parameterType="map"><!--使用万能map-->
+        insert into mybatis.user (id,name ,pwd) values (#{userId},#{userName},#{userPwd})
+    </insert>
+
+
+
+
+
+
+
+    <update id="UpdateUser"  parameterType="com.kuang.pojo.User">
+        update mybatis.user
+        set name = #{name},pwd=#{pwd}
+        where id=#{id};
+    </update>
+
+    <delete id="deleteUser" parameterType="int">
+        delete from mybatis.user where id=#{id}
+    </delete>
+
+
+    <select id="getUserLike" resultType="com.kuang.pojo.User">
+        select * from mybatis.user where name like #{value}
+    </select>
+<!--    模糊查询方式2： 在sql语句中拼接通配符，会引起sql注入
+<select id=”selectlike”>
+select * from foo where bar like "%"#{value}"%"
+</select>
+-->
+
+
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--configuration：核心配置文件：位置顺序是有要求的，按要求写。-->
+<configuration>
+    <!--1、导入外部配置文件properties文件:配置文件是最先读的，一定在最上面。-->
+    <properties resource="db.properties"/>
+
+
+
+    <!--2、日志工厂配置-->
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/><!--默认的标准日志工厂-->
+        <!--        <setting name="logImpl" value="LOG4J"/>-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/><!--属性名和字段名（create_time）不一致-->
+    </settings>
+
+
+    <!--3、配置别名,注意顺序-->
+    <!--    <typeAliases>-->
+    <!--        <typeAlias type="com.kuang.pojo.User" alias="User"/>-->
+    <!--    </typeAliases>-->
+    <typeAliases>
+        <package name="com.kuang.pojo"/>
+    </typeAliases>
+
+
+
+    <!--4.环境-->
+    <environments default="development"><!--配置MyBatis的多套运行环境，将SQL映射到多个不同的数据库上，必须指定其中一个为默认运行环境（通过default指定）-->
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+
+    <!--5.绑定接口：-->
+    <mappers>
+        <mapper class="com.kuang.dao.BlogMapper"/>
+
+    </mappers>
+
+
+
+</configuration>
+

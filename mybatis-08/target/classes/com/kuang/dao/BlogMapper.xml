@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kuang.dao.BlogMapper">
+
+    <sql id="if-title-author">
+        <if test="title !=null">
+            title=#{title}
+        </if>
+        <if test="author!=null">
+            and author=#{author}
+        </if>
+    </sql>
+
+    <insert id="addBlog" parameterType="blog">  /*这这里配置文件使用的是之前指定包名的类型别名。在没有注解的情况下，会使用 Bean 的首字母小写的非限定类名来作为它的别名*/
+    insert into mybatis.blog (id, title, author, create_time, views)
+    values (#{id},#{title},#{author},#{createTime},#{views});
+    </insert>
+
+    <select id="queryBlogIF" parameterType="map" resultType="Blog">
+        select * from mybatis.blog
+        <where>
+            <include refid="if-title-author">
+            </include>
+        </where>
+    </select>
+
+
+
+
+    <select id="queryBlogChoose" parameterType="map" resultType="Blog">
+        select * from mybatis.blog
+        <where>
+            <choose>
+                <when test="title != null">
+                    title = #{title}
+                </when>
+                <when test="author != null">
+                    and author = #{author}
+                </when>
+                <otherwise>
+                    and views = #{views}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <update id="updateBlog" parameterType="map">
+        update mybatis.blog
+        <set>
+            <if test="title !=null">
+                title=#{title},
+            </if>
+            <if test="author !=null">
+                author=#{author},<!--set会自动去掉多余的 逗号。-->
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+    <!--用动态sql——forEach: 实现select  * from blog where  1=1 and (id=1 or id=2 or id=3)-->
+    <!--对应下面的open="and (" close=")" separator="or"-->
+<!--     这个集合是map传过来的   -->
+    <select id="queryBlogForeach" parameterType="map" resultType="blog">
+        select * from mybatis.blog
+        <where>
+            <foreach collection="ids" item="id" open="and (" close=")" separator="or">
+               id=#{id}
+            </foreach>
+        </where>
+    </select>
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--需求：获取所有学生及对应老师的信息-->
+
+<!--子查询：select,,,,from id=(select id from....)
+联表查询：select s.id,s.name,t.name from mybatis.student s,mybatis.teacher t where
+-->
+
+
+<mapper namespace="com.kuang.dao.StudentMapper">
+
+
+</mapper>

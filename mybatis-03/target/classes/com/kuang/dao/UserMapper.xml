@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace命名空间：绑定一个对应的mapper接口-->
+<mapper namespace="com.kuang.dao.UserMapper">
+<!--    <select id="selectUserById" resultType="user">-->
+<!--        select * from mybatis.user where id = #{id}-->
+<!--    </select>-->
+
+
+
+    <resultMap id="UserMap" type="User">  <!--把下面的select标签结果，映射到这里-->
+        <result column="id" property="id"/>   <!--column是数据库的，property是实体类的，形成一一对应关系-->
+        <result column="name" property="name"/>
+        <result column="pwd" property="password"/><!--一一对应，使得能成功映射。-->
+    </resultMap>
+
+    <select id="getUserById" resultMap="UserMap">  <!--resultMap：结果集映射-->
+        select  * from mybatis.user where id=#{id};
+    </select>
+</mapper>

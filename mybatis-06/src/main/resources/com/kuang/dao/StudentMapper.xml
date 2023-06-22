@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--需求：获取所有学生及对应老师的信息-->
+
+<!--子查询：select,,,,from id=(select id from....)
+联表查询：select s.id,s.name,t.name from mybatis.student s,mybatis.teacher t where
+-->
+
+
+<mapper namespace="com.kuang.dao.StudentMapper">
+    <!--        方法一、按查询嵌套处理(类似于子查询)-->
+    <!--
+   思路：
+    1. 获取所有学生的信息
+    2. 根据获取的学生信息的老师ID->获取该老师的信息(子查询方式又查了一次)
+    3. 思考问题，这样学生的结果集中应该包含老师，该如何处理呢，数据库中我们一般
+    使用关联查询？
+    1. 做一个结果集映射：StudentTeacher
+    2. StudentTeacher结果集的类型为 Student
+    3. 学生中老师的属性为teacher，对应数据库中为tid。多个 [1,...）学生关联一个老师=> 一对一，一对多
+    4. 查看官网找到：association – 一个复杂类型的关联；使用它来处理关联查询-->
+
+    <select id="getStudent" resultMap="StudentTeacher">
+        #                 select s.id,s.name,t.name from mybatis.student s,mybatis.teacher t where s.tid=t.id;
+        select * from mybatis.student;
+    </select>
+
+
+    <resultMap id="StudentTeacher" type="Student">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <!--        对于复杂的属性，我们需要单独处理。--><!--如果是一个对象，我们就用associate，集合用collection-->
+
+        <!--这里传递过来的id，只有一个属性的时候，下面可以写任何值association中column多参数配置：
+          column="{key=value,key=value}"其实就是键值对的形式，key是传给下个sql的取值名称，value是片段一
+          中sql查询的字段名。-->
+        <association property="teacher" column="tid" javaType="Teacher" select="getTeacher"/>
+    </resultMap>
+
+    <select id="getTeacher" resultType="Teacher">
+        select * from mybatis.teacher where id=#{yyyyid}  /*尽量还是id保持一致为tid*/
+    </select>
+
+    <!--=================================================================================================-->
+    <!--=================================================================================================-->
+    <!--=================================================================================================-->
+
+
+    <!--方法二、按结果嵌套处理-->
+
+    <!--
+   思路：
+    1. 获取所有学生的信息
+    2. 根据获取的学生信息的老师ID->获取该老师的信息（有没有办法，写成一句话，而不是查询两次？）
+    类似这样一句话搞定： select s.id,s.name,t.name from mybatis.student s,mybatis.teacher t where s.tid=t.id;-->
+
+    <select id="getStudent2" resultMap="StudentTeacher2">
+        select s.id sid,s.name sname,t.name tname from mybatis.student s,mybatis.teacher t where s.tid=t.id;
+    </select>
+
+    <resultMap id="StudentTeacher2" type="Student">
+        <result property="id" column="sid"/>
+        <result property="name" column="sname"/>
+        <association property="teacher" javaType="Teacher"><!--第三个属性是Teacher类？是就是，直接写上javaType="Teacher"。
+        然后再去Teacher类进行 （tname）的对应-->
+            <!--            现在要处理teacher-->
+           <result property="name" column="tname"/>
+        </association>
+    </resultMap>
+<!--过程：先让sql查出来结果：管他是什么结果，先查出来。然后对结果处理：
+查出来的sid,就对应要输出的Student类型的id
+查出来的sname,就对应要输出的Student类型的name
+查出来的tname,为Teacher类型的name。结果对应要输出的Student类型的teacher
+-->
+
+
+
+
+
+
+
+
+
+
+</mapper>

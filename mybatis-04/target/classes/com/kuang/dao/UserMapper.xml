@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace命名空间：绑定一个对应的mapper接口-->
+<mapper namespace="com.kuang.dao.UserMapper">
+    <!--    //    1.根据id查询用户方法:需要传参。用到了parameterType，传入SQL语句的参数类型 。-->
+    <resultMap id="UserMap" type="User">  <!--把下面的select标签结果，映射到这里-->
+        <result column="id" property="id"/>   <!--column是数据库的，property是实体类的，形成一一对应关系-->
+        <result column="name" property="name"/>
+        <result column="pwd" property="password"/><!--一一对应，使得能成功映射。-->
+    </resultMap>
+
+    <select id="getUserById" resultMap="UserMap">  <!--resultMap：结果集映射-->
+        select  * from mybatis.user where id=#{id};
+    </select>
+
+
+<!--    2.1选择全部用户实现分页-->
+    <select id="getUserByLimit" parameterType="map"  resultMap="UserMap">  <!--    传参为map类型，-->
+        select  * from mybatis.user limit #{startIndex},#{pageSize}
+    </select>
+    <!--    2.2   通过RowBounds分页（了解即可。老代码）-->
+    <select id="getUserByRowBounds"    resultMap="UserMap">
+        select  * from mybatis.user
+    </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
